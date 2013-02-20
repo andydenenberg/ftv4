@@ -12,6 +12,16 @@ role :app, "107.20.214.190"                          # This may be the same as y
 role :db,  "107.20.214.190", :primary => true # This is where Rails migrations will run
 #role :db,  "your slave db-server here"
 
+# in RAILS_ROOT/config/deploy.rb:
+after 'deploy:symlink_db'
+
+namespace :deploy do
+  desc "Symlinks the database.yml"
+  task :symlink_db, :roles => :app do
+    run "ln -nfs #{deploy_to}/shared/config/database.yml #{release_path}/config/database.yml"
+  end
+end
+
 desc "tail production log files" 
 task :tail_logs, :roles => :app do
   run "tail -f #{shared_path}/log/production.log" do |channel, stream, data|
