@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-FairtaxTest::Application.load_tasks
+Ftv4::Application.load_tasks
