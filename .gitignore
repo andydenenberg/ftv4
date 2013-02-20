@@ -14,4 +14,6 @@
 /log/*.log
 /tmp
 /support_files
+/config/config.yml
+/config/database.yml
 
