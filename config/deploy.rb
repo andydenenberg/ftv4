@@ -7,10 +7,20 @@ set :keep_releases, 5
 # set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
 
-role :web, "10.96.30.86"                          # Your HTTP server, Apache/etc
-role :app, "10.96.30.86"                          # This may be the same as your `Web` server
-role :db,  "10.96.30.86", :primary => true # This is where Rails migrations will run
+role :web, "107.20.214.190"                          # Your HTTP server, Apache/etc
+role :app, "107.20.214.190"                          # This may be the same as your `Web` server
+role :db,  "107.20.214.190", :primary => true # This is where Rails migrations will run
 #role :db,  "your slave db-server here"
+
+desc "tail production log files" 
+task :tail_logs, :roles => :app do
+  run "tail -f #{shared_path}/log/production.log" do |channel, stream, data|
+    puts  # for an extra line break before the host name
+    puts "#{channel[:host]}: #{data}" 
+    break if stream == :err    
+  end
+end
+
 
 # if you want to clean up old releases on each deploy uncomment this:
 # after "deploy:restart", "deploy:cleanup"
