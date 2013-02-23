@@ -1,1 +1,13 @@
-<h3><%= @property.street%></h3>
+<form>
+	
+<%  property = Property.find_by_street('626 Hill Rd') %>
+<% most_favorable = Property.most_favorable(property, count=10, multiplier=0.5) %>
+<table border=2>
+<% most_favorable.each do |prop| %>
+<tr>
+<td><%= prop.street %></td>
+<td><%= prop.assessed_value %></td>
+<td><%= prop.detail.building_value_ratio %></td>
+</tr>
+<% end %>
+</table>

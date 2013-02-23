@@ -39,8 +39,7 @@ module RepDatabase
         i += 1
         record = self.from_csv(line, model)
          record.save! 
-        puts i.to_s # + ' - ' + record.inspect
-        
+        puts i.to_s # + ' - ' + record.inspect        
       end  
     end  
   end
@@ -62,5 +61,45 @@ module RepDatabase
        puts prop.count.to_s + ' - ' + prop[0].street + ' - ' + prop[0].city
      end   
   end
+
+
+# dump_city and get_city methods are to be used to extract and insert specific city property and detail records
+# run 'rails console test'
+# 1.9.3-p327 :001 > RepDatabase.dump_city('Winnetka')
+# 1.9.3-p327 :001 > RepDatabase.get_city('Winnetka')
+# 1.9.3-p327 :001 > RepDatabase.repair_relationship(Detail, Property)
+#
+  def self.dump_city(city)
+    f1 = File.open(city + '_detail_dump.csv', 'w')  
+    File.open(city + '_property_dump.csv', 'w') do |f2|  
+      Property.where(:city => city).each_with_index do |prop,i|
+          puts i
+          f1.puts self.to_csv(prop.detail)
+          f2.puts self.to_csv(prop)
+      end
+    end
+    return nil
+  end
+  
+  def self.get_city(city)
+    require 'csv'
+    property_attribs = Property.new.attributes.keys 
+    detail_attribs = Detail.new.attributes.keys 
+    i = 0
+    f1 = File.open(city + '_detail_dump.csv', 'r')  
+    File.open(city + '_property_dump.csv', 'r') do |f2|  
+      while line = f2.gets 
+        i += 1
+        prop = self.from_csv(line, Property)
+         prop.save! 
+        line = f1.gets
+        detail = self.from_csv(line, Detail)
+         detail.save! 
+        
+        puts i.to_s # + ' - ' + record.inspect        
+      end  
+    end  
+  end
+  
 
 end
